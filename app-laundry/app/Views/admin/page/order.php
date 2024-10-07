@@ -1,19 +1,28 @@
 <?= $this->extend('admin/index') ?>
 <?= $this->section('content') ?>
 
+<link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
+<script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
+
 <style>
     .table th,
     .table td {
-        
-        max-width: 150px; /* Atur lebar maksimum */
-        word-wrap: break-word; /* Memastikan teks dapat terputus */
-        overflow-wrap: break-word; /* Alternatif untuk dukungan browser */
-        white-space: normal; /* Pastikan teks dapat terbungkus */
+
+        max-width: 150px;
+        /* Atur lebar maksimum */
+        word-wrap: break-word;
+        /* Memastikan teks dapat terputus */
+        overflow-wrap: break-word;
+        /* Alternatif untuk dukungan browser */
+        white-space: normal;
+        /* Pastikan teks dapat terbungkus */
     }
 
     .table td {
-        overflow: hidden; /* Sembunyikan overflow jika ada */
-        text-overflow: ellipsis; /* Gunakan elipsis jika terlalu panjang */
+        overflow: hidden;
+        /* Sembunyikan overflow jika ada */
+        text-overflow: ellipsis;
+        /* Gunakan elipsis jika terlalu panjang */
     }
 </style>
 
@@ -28,7 +37,40 @@
                         <div class="title" style="text-align: center; font-size: 14pt; font-weight: bolder; background-color: green; color: black;">
                             Order item
                         </div>
-                        left
+
+                        <div class="form-group">
+                            <label for="inputNama" class="col-form-label">Nama Pelayanan</label>
+                            <select id="item" class="form-control" name="item" style="border: 1 px solid; black"></select>
+                        </div>
+
+                        <div class="section" style="display: flex;">
+                            <div class="left" style="width: 50%; margin-right: 3%;">
+                                <div class="form-group">
+                                    <label for="harga" class="col-form-label">Harga</label>
+                                    <input
+                                        type="number"
+                                        id="harga"
+                                        class="form-control"
+                                        style="border: 1px solid grey; padding: 1%;"
+                                        name="harga" readonly>
+                                </div>
+                            </div>
+                            <div class="right" style="width: 44%;">
+                                <div class="form-group">
+                                    <label for="inputNama" class="col-form-label">Jumlah</label>
+                                    <input
+                                        type="number"
+                                        id="inputNama"
+                                        class="form-control"
+                                        style="border: 1px solid grey; padding: 1%;"
+                                        name="jumlah">
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="btn" style="text-align: center; width: 100%; margin-top: 5%;">
+                            <button class="btn btn-sm btn-success">Add to cart</button>
+                        </div>
                     </div>
                     <div class="right" style="width: 68%; border: 1px solid; padding: 0.5%;">
                         <div class="title" style="text-align: center; font-size: 14pt; font-weight: bolder; background-color: yellow; color: black;">
@@ -85,5 +127,56 @@
         </div>
     </div>
 </div>
+
+
+<script>
+    $(document).ready(function() {
+        // Initialize select2
+        $('#item').select2({
+            placeholder: 'Pilih Pelayanan',
+            ajax: {
+                url: '<?= base_url('crud/search'); ?>', // URL untuk pencarian data
+                dataType: 'json',
+                delay: 150,
+                processResults: function(data) {
+                    console.log(data)
+                    return {
+                        results: data
+                    };
+                },
+                data: function(params) {
+                    console.log(params)
+                    // Jika params.term tidak ada, kirimkan string kosong
+                    var query = {
+                        term: params.term || '' // Default ke string kosong jika tidak ada input
+                    };
+                    console.log(query); // Untuk debugging, lihat apa yang dikirim
+                    return query;
+                },
+                cache: true
+            }
+        });
+
+        // When item is selected, fetch data via AJAX
+        $('#item').on('change', function() {
+            var itemId = $(this).val();
+            if (itemId) {
+                $.ajax({
+                    url: '<?= base_url('crud/detail'); ?>/' + itemId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(response) {
+                        if (response) {
+                            console.log(response)
+                            // $('#name').val(response.name);
+                            $('#harga').val(response.harga);
+                        }
+                    }
+                });
+            }
+        });
+    });
+</script>
+
 
 <?= $this->endSection(); ?>

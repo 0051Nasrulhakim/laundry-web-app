@@ -22,26 +22,23 @@ class Crud extends BaseController
         $this->validation->run($data, 'insertPelayanan');
         $errors = $this->validation->getErrors();
 
-        if($errors){
+        if ($errors) {
 
             session()->setFlashdata('errors', $errors);
             return redirect()->to(base_url('admin/add_pelayanan'));
             // dd($errors);
 
-        }else{
+        } else {
 
-            if($data['harga'] < 1){
-            
-                session()->setFlashdata('errors', ['harga'=>'Harga tidak boleh 0']);
+            if ($data['harga'] < 1) {
+
+                session()->setFlashdata('errors', ['harga' => 'Harga tidak boleh 0']);
                 return redirect()->to(base_url('admin/add_pelayanan'));
+            } else {
 
-            }
-            else{
+                $this->masterProdukJasa->insert($data);
 
-                $this->masterProdukJasa->insert($data); 
-                
                 return redirect()->to(base_url('admin/list_harga'));
-                
             }
         }
     }
@@ -73,28 +70,51 @@ class Crud extends BaseController
         $this->validation->run($data, 'updatePelayanan');
         $errors = $this->validation->getErrors();
 
-        if($errors){
+        if ($errors) {
 
             session()->setFlashdata('errors', $errors);
             return redirect()->to(base_url('admin/showFormUpdate/' . $id))->withInput();
             // dd($errors);
 
-        }else{
+        } else {
 
-            if($data['harga'] < 1){
-            
-                session()->setFlashdata('errors', ['harga'=>'Harga tidak boleh 0']);
+            if ($data['harga'] < 1) {
+
+                session()->setFlashdata('errors', ['harga' => 'Harga tidak boleh 0']);
                 return redirect()->to(base_url('admin/showFormUpdate/' . $id))->withInput();
-
-            }
-            else{
+            } else {
 
                 $this->masterProdukJasa->update($id, $data);
-                
+
                 return redirect()->to(base_url('admin/list_harga'));
-                
             }
         }
     }
 
+    public function search()
+    {
+        $term = $this->request->getVar('term'); // Ambil term pencarian dari request
+        $data = $this->masterProdukJasa->like('nama_jasa_pelayanan', $term)->findAll();
+        $result = [];
+        foreach ($data as $row) {
+            $result[] = [
+                'id' => $row['id_prod_jasa'],
+                'text' => $row['nama_jasa_pelayanan']
+            ];
+        }
+        // dd($result);
+
+        return $this->response->setJSON($result);
+    }
+
+    public function detail($id)
+    {
+        $item = $this->masterProdukJasa->find($id);
+
+        if ($item) {
+            return $this->response->setJSON($item);
+        }
+
+        return $this->response->setJSON(['error' => 'Item not found'], 404);
+    }
 }
