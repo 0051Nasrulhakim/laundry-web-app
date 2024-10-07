@@ -15,7 +15,7 @@
       <ul class="navbar-nav">
 
         <li class="nav-item">
-          <a class="nav-link text-white " href="./pages/dashboard.html">
+          <a class="nav-link text-white " href="<?= base_url()?>">
 
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <i class="material-icons opacity-10">dashboard</i>
@@ -26,10 +26,10 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link text-white " href="./pages/dashboard.html">
+          <a class="nav-link text-white " href="<?= base_url('admin/kasir')?>">
 
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
-              <i class="material-icons opacity-10">Kasir</i>
+              <i class="fa-solid fa-cash-register fa-lg"></i>
             </div>
 
             <span class="nav-link-text ms-1">Kasir</span>
@@ -37,7 +37,7 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link text-white " href="./pages/dashboard.html">
+          <a class="nav-link text-white " href="<?= base_url('admin/list_harga')?>">
 
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <!-- <i class="material-icons opacity-10">list</i> -->

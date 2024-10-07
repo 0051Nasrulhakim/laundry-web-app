@@ -23,6 +23,12 @@ class Admin extends BaseController
         return view('admin/form/add_pelayanan');
     }
 
+    public function kasir()
+
+    {
+        return view('admin/page/order');
+    }
+
     public function showFormUpdate($id)
     {
         $data = [
