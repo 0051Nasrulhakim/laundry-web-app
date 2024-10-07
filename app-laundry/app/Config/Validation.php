@@ -41,4 +41,58 @@ class Validation extends BaseConfig
     // --------------------------------------------------------------------
     // Rules
     // --------------------------------------------------------------------
+
+    public $insertPelayanan = [
+        'nama_jasa_pelayanan' => [
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'Nama harus diisi',
+            ]
+        ],
+        'harga' => [
+            'rules' => 'required|numeric',
+            'errors' => [
+                'required' => 'Harga harus diisi',
+                'numeric'  => 'Harga tidak valid'
+            ]
+        ],
+        'satuan' => [
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'Satuan harus diisi',
+            ]
+        ],
+        
+    ];
+
+    public $updatePelayanan = [
+        'id_prod_jasa' => [
+            'rules' => 'required',
+            'error' => [
+                'required' => 'Id harus di isi'
+            ]
+        ],
+        'nama_jasa_pelayanan' => [
+            'rules' => 'required|is_unique[master_produk_jasa.nama_jasa_pelayanan,id_prod_jasa,{id_prod_jasa}]',
+            'errors' => [
+                'required' => 'Nama harus diisi',
+                'is_unique' => 'Nama jasa pelayanan sudah terdaftar.'
+            ]
+        ],
+        'harga' => [
+            'rules' => 'required|numeric|greater_than[0]',
+            'errors' => [
+                'required' => 'Harga harus diisi',
+                'numeric'  => 'Harga tidak valid',
+                'greater_than' => 'Harga tidak boleh 0'
+            ]
+        ],
+        'satuan' => [
+            'rules' => 'required',
+            'errors' => [
+                'required' => 'Satuan harus diisi',
+            ]
+        ],
+    ];
+    
 }

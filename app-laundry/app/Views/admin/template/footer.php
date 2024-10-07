@@ -1,8 +1,8 @@
   <!--   Core JS Files   -->
-  <script src="./assets/js/core/popper.min.js"></script>
-  <script src="./assets/js/core/bootstrap.min.js"></script>
-  <script src="./assets/js/plugins/perfect-scrollbar.min.js"></script>
-  <script src="./assets/js/plugins/smooth-scrollbar.min.js"></script>
+  <script src="<?= base_url()."assets/js/core/popper.min.js"?>"></script>
+  <script src="<?= base_url(). "assets/js/core/bootstrap.min.js"?>"></script>
+  <script src="<?= base_url(). "assets/js/plugins/perfect-scrollbar.min.js"?>"></script>
+  <script src="<?= base_url(). "assets/js/plugins/smooth-scrollbar.min.js"?>"></script>
 
   <script>
       var win = navigator.platform.indexOf('Win') > -1;
@@ -19,7 +19,7 @@
 
 
   <!-- Control Center for Material Dashboard: parallax effects, scripts for the example pages etc -->
-  <script src="./assets/js/material-dashboard.min.js?v=3.1.0"></script>
+  <script src="<?= base_url(). "assets/js/material-dashboard.min.js?v=3.1.0"?>"></script>
   </body>
 
   </html>
