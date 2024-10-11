@@ -8,6 +8,7 @@ class Crud extends BaseController
     public function __construct()
     {
         $this->masterProdukJasa = new \App\Models\MasterProdukJasa();
+        $this->cart = new \App\Models\Cart();
         $this->validation = \Config\Services::validation();
     }
 
@@ -117,4 +118,42 @@ class Crud extends BaseController
 
         return $this->response->setJSON(['error' => 'Item not found'], 404);
     }
+
+
+    /* 
+        menu kasir
+        add keranjang
+    
+    */
+
+
+    public function addToCart()
+    {
+        $data = [
+            'id_prod_jasa' => $this->request->getPost('id_prod_jasa'),
+            'id_kasir'     => '0',
+            'qty'          => $this->request->getPost('qty'),
+            'total_harga'  => $this->request->getPost('total_harga'), 
+            'harga'        => $this->request->getPost('harga')
+        ];
+
+        // dd($data);
+
+        $this->cart->insert($data);
+        // return 
+        // buat tanpa reload
+
+        return redirect()->to(base_url('admin/kasir'));
+
+    }
+
+    
+    /* 
+        menu kasir
+        add keranjang
+    
+    */
+
+
+
 }

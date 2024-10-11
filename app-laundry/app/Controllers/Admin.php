@@ -2,10 +2,17 @@
 
 namespace App\Controllers;
 use App\Traits\GetListPelayanan;
+use App\Traits\cartListable;
+
 
 class Admin extends BaseController
 {
-    use GetListPelayanan;
+    use GetListPelayanan, cartListable;
+
+    public function __construct()
+    {
+        $this->initCart();
+    }
 
     public function list_harga()
     {
@@ -26,7 +33,11 @@ class Admin extends BaseController
     public function kasir()
 
     {
-        return view('admin/page/order');
+        $data = [
+            'listCart' => $this->GetListCart()
+        ];
+        // dd($data);
+        return view('admin/page/order', $data);
     }
 
     public function showFormUpdate($id)

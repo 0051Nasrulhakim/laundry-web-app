@@ -68,7 +68,7 @@ class Validation extends BaseConfig
     public $updatePelayanan = [
         'id_prod_jasa' => [
             'rules' => 'required',
-            'error' => [
+            'errors' => [
                 'required' => 'Id harus di isi'
             ]
         ],

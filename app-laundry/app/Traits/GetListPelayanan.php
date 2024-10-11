@@ -12,6 +12,7 @@ trait GetListPelayanan
         $this->masterProdukJasa = new MasterProdukJasa();
     }
 
+
     public function fetchListPelayanan()
     {
         return $this->masterProdukJasa->findAll();

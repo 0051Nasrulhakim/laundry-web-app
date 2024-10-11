@@ -38,39 +38,63 @@
                             Order item
                         </div>
 
-                        <div class="form-group">
-                            <label for="inputNama" class="col-form-label">Nama Pelayanan</label>
-                            <select id="item" class="form-control" name="item" style="border: 1 px solid; black"></select>
-                        </div>
+                        <form action="<?= base_url('crud/addToCart') ?>" method="post">
 
-                        <div class="section" style="display: flex;">
-                            <div class="left" style="width: 50%; margin-right: 3%;">
-                                <div class="form-group">
-                                    <label for="harga" class="col-form-label">Harga</label>
-                                    <input
-                                        type="number"
-                                        id="harga"
-                                        class="form-control"
-                                        style="border: 1px solid grey; padding: 1%;"
-                                        name="harga" readonly>
+                            <div class="form-group">
+                                <label for="inputNama" class="col-form-label">Nama Pelayanan</label>
+                                <select id="item" class="form-control" name="item" style="border: 1 px solid; black"></select>
+                            </div>
+
+                            <div class="section" style="display: flex;">
+                                <div class="left" style="width: 50%; margin-right: 3%;">
+                                    <div class="form-group">
+                                        <label for="harga" class="col-form-label">Harga</label>
+                                        <input
+                                            type="number"
+                                            id="harga"
+                                            class="form-control"
+                                            style="border: 1px solid grey; padding: 1%;"
+                                            name="harga" readonly>
+                                    </div>
+                                </div>
+                                <div class="left" style="width: 50%; margin-right: 3%;">
+                                    <div class="form-group">
+                                        <input
+                                            type="text"
+                                            id="id_prod_jasa"
+                                            class="form-control"
+                                            style="border: 1px solid grey; padding: 1%;"
+                                            name="id_prod_jasa" readonly hidden>
+                                    </div>
+                                </div>
+                                <div class="right" style="width: 44%;">
+                                    <div class="form-group">
+                                        <label for="inputNama" class="col-form-label">Jumlah</label>
+                                        <input
+                                            type="number"
+                                            id="qty"
+                                            class="form-control"
+                                            style="border: 1px solid grey; padding: 1%;"
+                                            name="qty" oninput="calculateTotal()">
+                                    </div>
                                 </div>
                             </div>
-                            <div class="right" style="width: 44%;">
-                                <div class="form-group">
-                                    <label for="inputNama" class="col-form-label">Jumlah</label>
-                                    <input
-                                        type="number"
-                                        id="inputNama"
-                                        class="form-control"
-                                        style="border: 1px solid grey; padding: 1%;"
-                                        name="jumlah">
-                                </div>
-                            </div>
-                        </div>
 
-                        <div class="btn" style="text-align: center; width: 100%; margin-top: 5%;">
-                            <button class="btn btn-sm btn-success">Add to cart</button>
-                        </div>
+                            <div class="form-group">
+                                <label for="total" class="col-form-label">Total</label>
+                                <input
+                                    type="number"
+                                    id="total"
+                                    class="form-control"
+                                    style="border: 1px solid grey; padding: 1%;"
+                                    name="total_harga" readonly>
+                            </div>
+
+                            <div class="btn" style="text-align: center; width: 100%; margin-top: 5%;">
+                                <button class="btn btn-sm btn-success">Add to cart</button>
+                            </div>
+
+                        </form>
                     </div>
                     <div class="right" style="width: 68%; border: 1px solid; padding: 0.5%;">
                         <div class="title" style="text-align: center; font-size: 14pt; font-weight: bolder; background-color: yellow; color: black;">
@@ -89,32 +113,21 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr>
-                                    <td style="text-align: center;">1</td>
-                                    <td style="word-wrap: break-word; max-width: 200px;">Boneka besar ukuran manusia</td>
-                                    <td style="text-align: center;">200.000</td>
-                                    <td style="text-align: center;">1</td>
-                                    <td style="text-align: center;">Kg</td>
-                                    <td style="text-align: center;">200.000</td>
-                                    <td style="text-align: center;">
-                                        <button class="btn">
-                                            <i class="fa-solid fa-trash fa-lg" style="color: red;"></i>
-                                        </button>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <td style="text-align: center;">1</td>
-                                    <td style="word-wrap: break-word; max-width: 200px;">Boneka besar ukuran manusia</td>
-                                    <td style="text-align: center;">200.000</td>
-                                    <td style="text-align: center;">2</td>
-                                    <td style="text-align: center;">Kg</td>
-                                    <td style="text-align: center;">200.000</td>
-                                    <td style="text-align: center;">
-                                        <button class="btn">
-                                            <i class="fa-solid fa-trash fa-lg" style="color: red;"></i>
-                                        </button>
-                                    </td>
-                                </tr>
+                                <?php $i=1; foreach ($listCart as $list): ?>
+                                    <tr>
+                                        <td style="text-align: center;"><?= $i++?></td>
+                                        <td style="word-wrap: break-word; max-width: 200px;"><?= $list['nama_jasa_pelayanan'] ?></td>
+                                        <td style="text-align: center;"><?=  $list['harga']?></td>
+                                        <td style="text-align: center;"><?= $list['qty'] ?></td>
+                                        <td style="text-align: center;"><?= $list['satuan'] ?></td>
+                                        <td style="text-align: center;"><?= $list['total_harga'] ?></td>
+                                        <td style="text-align: center;">
+                                            <button class="btn">
+                                                <i class="fa-solid fa-trash fa-lg" style="color: red;"></i>
+                                            </button>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
                             </tbody>
                         </table>
                         <div class="btn-action" style="text-align: right;">
@@ -139,13 +152,13 @@
                 dataType: 'json',
                 delay: 150,
                 processResults: function(data) {
-                    console.log(data)
+                    // console.log(data)
                     return {
                         results: data
                     };
                 },
                 data: function(params) {
-                    console.log(params)
+                    // console.log('params =' + params)
                     // Jika params.term tidak ada, kirimkan string kosong
                     var query = {
                         term: params.term || '' // Default ke string kosong jika tidak ada input
@@ -167,8 +180,8 @@
                     dataType: 'json',
                     success: function(response) {
                         if (response) {
-                            console.log(response)
-                            // $('#name').val(response.name);
+                            console.log('res',response)
+                            $('#id_prod_jasa').val(response.id_prod_jasa);
                             $('#harga').val(response.harga);
                         }
                     }
@@ -176,6 +189,23 @@
             }
         });
     });
+
+    function calculateTotal() {
+        var total = 0;
+        var harga = $('#harga').val();
+        var input = $('#qty').val();
+
+
+        // console.log(input)
+        console.log(harga)
+        if (harga != '') {
+            total = parseInt(input) * parseInt(harga);
+
+            $('#total').val(total);
+        } else {
+            alert('Pilih pelayanan terlebih dahulu');
+        }
+    }
 </script>
 
 
