@@ -3,6 +3,8 @@ namespace App\Traits;
 
 use App\Models\Cart;
 use App\Models\MasterProdukJasa;
+use App\Models\OrderTransaksi;
+use App\Models\OrderHistory;
 
 trait cartListable
 {
@@ -12,6 +14,8 @@ trait cartListable
     {
         $this->cart = new Cart();
         $this->masterProdukJasa = new MasterProdukJasa();
+        $this->orderHistori = new OrderHistory();
+        $this->orderTransaksi = new OrderTransaksi();
     }
 
     public function GetListCart()
@@ -37,6 +41,19 @@ trait cartListable
             'data' => $data,
             'total_harga' => $totalHarga // Kembalikan total_harga bersama data
         ];
+    }
+
+
+    public function GetListOrderTransaksi($id)
+    {
+        // buat relasi ke prduk
+        return $data = $this->orderHistori->join('master_produk_jasa', 'master_produk_jasa.id_prod_jasa = order_history.id_prod_jasa')->where('order_history.id_transaksi', $id)->findAll();
+
+    }
+
+    public function getOrderTransaksiById($id)
+    {
+        return $this->orderTransaksi->where('id_transaksi', $id)->first();
     }
 
 

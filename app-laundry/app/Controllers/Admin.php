@@ -57,4 +57,14 @@ class Admin extends BaseController
         ];
         return view('admin/form/checkout', $data);
     }
+
+    public function invoice($id)
+    {
+        $transaksi = [
+            'item' => $this->GetListOrderTransaksi($id),
+            'orderDetail' => $this->getOrderTransaksiById($id)
+        ];
+        // dd($transaksi);
+        return view('admin/page/finish_order', $transaksi);
+    }
 }

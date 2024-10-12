@@ -208,19 +208,14 @@ class Crud extends BaseController
             'nama_pembeli' => $this->request->getPost('nama_pembeli'),
             'alamat_pembeli' => $this->request->getPost('alamat_pembeli'),
             'no_hp' => $this->request->getPost('no_hp'),
-            'tanggal_order' => '',
+            'tanggal_order' => date('Y-m-d H:i:s'),
         ];
         // dd($orderTransaksi);
         $this->orderTransaksi->insert($orderTransaksi);
 
-        $transaksi = [
-            'item' => $this->GetListCart(),
-            'orderDetail' => $orderTransaksi
-        ];
-
         $this->cart->where('id_kasir', '0')->delete();
         // dd($transaksi);
-        return view('admin/page/finish_order', $transaksi);
+        return redirect()->to(base_url('admin/invoice/').$id);
 
     }
 
