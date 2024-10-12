@@ -4,6 +4,7 @@
 <link href="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/css/select2.min.css" rel="stylesheet" />
 <script src="https://cdn.jsdelivr.net/npm/select2@4.1.0-rc.0/dist/js/select2.min.js"></script>
 
+
 <style>
     .table th,
     .table td {
@@ -26,7 +27,11 @@
     }
 </style>
 
+
 <div class="card-body">
+
+
+
     <div class="row">
         <div class="col-lg-12">
             <div class="d-flex flex-column h-100">
@@ -39,7 +44,16 @@
                         </div>
 
                         <form action="<?= base_url('crud/addToCart') ?>" method="post">
-
+                            <div class="left" style="width: 50%; margin-right: 3%;">
+                                <div class="form-group">
+                                    <input
+                                        type="text"
+                                        id="id_prod_jasa"
+                                        class="form-control"
+                                        style="border: 1px solid grey; padding: 1%;"
+                                        name="id_prod_jasa" readonly hidden>
+                                </div>
+                            </div>
                             <div class="form-group">
                                 <label for="inputNama" class="col-form-label">Nama Pelayanan</label>
                                 <select id="item" class="form-control" name="item" style="border: 1 px solid; black"></select>
@@ -55,16 +69,6 @@
                                             class="form-control"
                                             style="border: 1px solid grey; padding: 1%;"
                                             name="harga" readonly>
-                                    </div>
-                                </div>
-                                <div class="left" style="width: 50%; margin-right: 3%;">
-                                    <div class="form-group">
-                                        <input
-                                            type="text"
-                                            id="id_prod_jasa"
-                                            class="form-control"
-                                            style="border: 1px solid grey; padding: 1%;"
-                                            name="id_prod_jasa" readonly hidden>
                                     </div>
                                 </div>
                                 <div class="right" style="width: 44%;">
@@ -113,16 +117,17 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <?php $i=1; foreach ($listCart as $list): ?>
+                                <?php $i = 1;
+                                foreach ($listCart as $list): ?>
                                     <tr>
-                                        <td style="text-align: center;"><?= $i++?></td>
+                                        <td style="text-align: center;"><?= $i++ ?></td>
                                         <td style="word-wrap: break-word; max-width: 200px;"><?= $list['nama_jasa_pelayanan'] ?></td>
-                                        <td style="text-align: center;"><?=  $list['harga']?></td>
+                                        <td style="text-align: center;"><?= $list['harga'] ?></td>
                                         <td style="text-align: center;"><?= $list['qty'] ?></td>
                                         <td style="text-align: center;"><?= $list['satuan'] ?></td>
                                         <td style="text-align: center;"><?= $list['total_harga'] ?></td>
                                         <td style="text-align: center;">
-                                            <button class="btn">
+                                            <button class="btn" onclick="confirmDelete('<?= base_url('/crud/deleteCart/' . $list['id']) ?>')">
                                                 <i class="fa-solid fa-trash fa-lg" style="color: red;"></i>
                                             </button>
                                         </td>
@@ -130,16 +135,25 @@
                                 <?php endforeach; ?>
                             </tbody>
                         </table>
-                        <div class="btn-action" style="text-align: right;">
-                            <button class="btn btn-warning">Batalkan</button>
-                            <button class="btn btn-info">Checkout</button>
-                        </div>
+                        <?php if ($listCart): ?>
+                            <div class="btn-action" style="text-align: right;">
+                                <button class="btn btn-warning" onclick="confirmCancel('<?= base_url('/crud/cancelCart/' . '0') ?>')">Batalkan</button>
+                                <!-- <button class="btn btn-info" onclick="checkout('<?= base_url('/crud/checkout/') . date('Ymdhis') ?>')">Checkout</button> -->
+                                <button class="btn btn-info" id="openModalBtn">Checkout</button>
+                                <!-- <button type="button" class="btn bg-gradient-primary" id="openModalBtn">
+                                    Launch demo modal
+                                </button> -->
+                            </div>
+                        <?php endif; ?>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </div>
+
+
+<?= $this->include('admin/utils/modal_Checkout') ?>
 
 
 <script>
@@ -180,7 +194,7 @@
                     dataType: 'json',
                     success: function(response) {
                         if (response) {
-                            console.log('res',response)
+                            console.log('res', response)
                             $('#id_prod_jasa').val(response.id_prod_jasa);
                             $('#harga').val(response.harga);
                         }
@@ -205,6 +219,85 @@
         } else {
             alert('Pilih pelayanan terlebih dahulu');
         }
+    }
+
+    function confirmCancel(url) {
+        Swal.fire({
+            title: 'Apakah Anda yakin membatalkan?',
+            text: "Semua Data ini akan dihapus!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Menggunakan AJAX untuk menghapus data
+                deleteData(url);
+            }
+        });
+    }
+
+    function confirmDelete(url) {
+        Swal.fire({
+            title: 'Apakah Anda yakin?',
+            text: "Data ini akan dihapus!",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Ya, hapus!',
+            cancelButtonText: 'Batal'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Menggunakan AJAX untuk menghapus data
+                deleteData(url);
+            }
+        });
+    }
+
+
+    function deleteData(url) {
+        $.ajax({
+            url: url,
+            type: 'DELETE', // atau 'POST' tergantung implementasi
+            success: function(result) {
+                Swal.fire(
+                    'Terhapus!',
+                    'Data telah berhasil dihapus.',
+                    'success'
+                ).then(() => {
+                    // Reload halaman atau redirect
+                    location.reload(); // Atau gunakan window.location.href = '/crud';
+                });
+            },
+            error: function(xhr, status, error) {
+                Swal.fire(
+                    'Error!',
+                    'Terjadi kesalahan saat menghapus data.',
+                    'error'
+                );
+            }
+        });
+    }
+
+    function checkout() {
+        Swal.fire({
+            title: 'Selesaikan Order?',
+            text: "Pastikan data yang Anda masukkan sudah benar.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes',
+            cancelButtonText: 'Cancel'
+        }).then((result) => {
+            if (result.isConfirmed) {
+                // Jika pengguna memilih "Yes", kirim form secara manual
+                document.getElementById('checkout').submit();
+            }
+        });
     }
 </script>
 

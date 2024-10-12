@@ -2,14 +2,21 @@
 
 namespace App\Controllers;
 
+use App\Models\OrderHistory;
+use App\Traits\cartListable;
+
 class Crud extends BaseController
 {
 
+    use cartListable;
     public function __construct()
     {
         $this->masterProdukJasa = new \App\Models\MasterProdukJasa();
+        $this->orderHistory = new \App\Models\OrderHistory();
+        $this->orderTransaksi = new \App\Models\OrderTransaksi();
         $this->cart = new \App\Models\Cart();
         $this->validation = \Config\Services::validation();
+        $this->initCart();
     }
 
     public function insertPelayanan()
@@ -133,7 +140,7 @@ class Crud extends BaseController
             'id_prod_jasa' => $this->request->getPost('id_prod_jasa'),
             'id_kasir'     => '0',
             'qty'          => $this->request->getPost('qty'),
-            'total_harga'  => $this->request->getPost('total_harga'), 
+            'total_harga'  => $this->request->getPost('total_harga'),
             'harga'        => $this->request->getPost('harga')
         ];
 
@@ -144,16 +151,82 @@ class Crud extends BaseController
         // buat tanpa reload
 
         return redirect()->to(base_url('admin/kasir'));
+    }
+
+    public function deleteCart($id)
+    {
+        $this->cart->delete($id);
+
+        $res = [
+            'status_code' => 200
+        ];
+
+        response()->setJSON($res);
+        return response();
+    }
+
+    public function cancelCart($id_kasir)
+    {
+        $this->cart->where('id_kasir', $id_kasir)->delete();
+
+        $res = [
+            'status_code' => 200
+        ];
+
+        response()->setJSON($res);
+        return response();
+    }
+
+    public function checkout($id)
+    {
+        // echo $id;
+        $data = [
+            "list_harga"  =>  $this->GetListProductToCheckOut(),
+        ];
+
+        $orderHistory = [];
+
+        foreach ($data['list_harga']['data'] as $loopdata){
+            $orderHistory[] = [
+                'id_transaksi' => $id,
+                'id_kasir'     => $loopdata['id_kasir'],
+                'id_prod_jasa' => $loopdata['id_prod_jasa'],
+                'harga'        => $loopdata['harga'],
+                'total_harga'  => $loopdata['total_harga'],
+                'qty'          => $loopdata['qty'],
+
+            ];
+        }
+
+        // dd($orderHistory);
+        $this->orderHistory->insertBatch($orderHistory);
+
+        $orderTransaksi = [
+            'id_transaksi' => $id,
+            'id_kasir'     => $orderHistory[0]['id_kasir'],
+            'total_harga_transaksi' => $data['list_harga']['total_harga'],
+            'nama_pembeli' => $this->request->getPost('nama_pembeli'),
+            'alamat_pembeli' => $this->request->getPost('alamat_pembeli'),
+            'no_hp' => $this->request->getPost('no_hp'),
+            'tanggal_order' => '',
+        ];
+        // dd($orderTransaksi);
+        $this->orderTransaksi->insert($orderTransaksi);
+
+        $transaksi = [
+            'item' => $this->GetListCart(),
+            'orderDetail' => $orderTransaksi
+        ];
+
+        $this->cart->where('id_kasir', '0')->delete();
+        // dd($transaksi);
+        return view('admin/page/finish_order', $transaksi);
 
     }
 
-    
     /* 
         menu kasir
         add keranjang
     
     */
-
-
-
 }

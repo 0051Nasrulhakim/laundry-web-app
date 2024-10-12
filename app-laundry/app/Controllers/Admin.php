@@ -48,4 +48,13 @@ class Admin extends BaseController
         // dd($data);
         return view('admin/form/update_pelayanan', $data);
     }
+
+    public function pageChekout($id)
+    {
+        $data = [
+            'data' => '',
+            'id_transaksi' => $id 
+        ];
+        return view('admin/form/checkout', $data);
+    }
 }
