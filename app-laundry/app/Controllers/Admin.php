@@ -12,6 +12,12 @@ class Admin extends BaseController
     public function __construct()
     {
         $this->initCart();
+        date_default_timezone_set('Asia/Jakarta');
+    }
+
+    public function index()
+    {
+        return view("admin/page/dashboard");
     }
 
     public function list_harga()
@@ -60,11 +66,23 @@ class Admin extends BaseController
 
     public function invoice($id)
     {
+        helper(['currency', 'tanggal']);
         $transaksi = [
             'item' => $this->GetListOrderTransaksi($id),
             'orderDetail' => $this->getOrderTransaksiById($id)
         ];
         // dd($transaksi);
         return view('admin/page/finish_order', $transaksi);
+    }
+
+    public function list_order_masuk()
+    {
+        helper(['currency', 'tanggal']);
+        $data = [
+            'data' => $this->getAllOrderTransaksi()
+
+        ];
+        // dd($data);
+        return view('admin/page/list_order_masuk', $data);
     }
 }

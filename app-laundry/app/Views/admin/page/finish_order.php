@@ -1,14 +1,14 @@
 <?= $this->extend('admin/index') ?>
 <?= $this->section('content') ?>
 
-<div class="section-mai" style="border: 1px solid; width: 50%; margin-left: auto; margin-right: auto; margin-top: 2%; margin-bottom: 2%;">
+<div class="section-mai" style="border: 1px solid; width: 55%; margin-left: auto; margin-right: auto; margin-top: 2%; margin-bottom: 2%;">
     <div class="title" style="text-align: center; font-size: 18pt; color: black; font-weight: 900;">
         INVOICE PEMBAYARAN
     </div>
     <div class="wrap-body" style="padding: 2%;">
         <div class="atasNama" style="text-align: right;">
             <div class="left">
-                19 - Oktober 2024 
+                <?= tanggal_indo($orderDetail['tanggal_order'], true) ?>
             </div>
         </div>
         <div class="atasNama" style="display: flex;">
@@ -39,8 +39,11 @@
             <div class="left" style="width: 27%;">
                 Alamat 
             </div>
-            <div class="right">
-                : <?= $orderDetail['alamat_pembeli']; ?>
+            <div class="semicolon" style="width: 2%;">
+                :
+            </div>
+            <div class="right" style="width: 70%;">
+                <?= $orderDetail['alamat_pembeli']; ?>
             </div>
         </div>
         <div class="orderDetail" style="display: flex; margin-top: 2%;">
@@ -51,21 +54,21 @@
                 
                 <?php foreach($item as $items):?>
                 <div class="itemList" style="display: flex; width: 100%;">
-                    <div class="namaItem" style="width: 67%;">
+                    <div class="namaItem" style="width: 65%;">
                         <?= $items['nama_jasa_pelayanan']; ?>
                     </div>
-                    <div class="harga" style="width: 30%;">
-                        @<?= $items['harga'] ?> x <?= $items['qty'] ?>
+                    <div class="harga" style="width: 32%;">
+                        <?= formatRupiah($items['harga']) ?> x <?= $items['qty'].$items['satuan'] ?>
                     </div>
-                    <div class="total" style="width: 30%; text-align: right;"><?= $items['total_harga']?></div>
+                    <div class="total" style="width: 30%; text-align: right;"><?= formatRupiah($items['total_harga'])?></div>
                 </div>
                 <?php endforeach;?>
                 
             </div>
         </div>
 
-        <div class="total_harga" style="text-align: right; font-size: 17pt;">
-            <?= $orderDetail['total_harga_transaksi']; ?>
+        <div class="total_harga" style="text-align: right; font-size: 17pt; border-top:2px solid; width: 85%; margin-left: 15%;">
+            <?= formatRupiah($orderDetail['total_harga_transaksi']); ?>
         </div>
         <div class="total_harga" style="text-align: center; margin-top: 2%; width: 80%; margin-left: auto; margin-right: auto;">
             Trimakasih Telah Mempercayakan Laundry pakaian anda kepada kami.

@@ -49,11 +49,11 @@
         </li>
 
         <li class="nav-item">
-          <a class="nav-link text-white " href="<?= base_url('admin/list_harga')?>">
+          <a class="nav-link text-white " href="<?= base_url('admin/list_order_masuk')?>">
 
             <div class="text-white text-center me-2 d-flex align-items-center justify-content-center">
               <!-- <i class="material-icons opacity-10">list</i> -->
-              <i class="fa-solid fa-list fa-lg"></i>
+              <i class="fa-solid fa-list-check fa-lg"></i>
             </div>
 
             <span class="nav-link-text ms-1">List Order Masuk</span>

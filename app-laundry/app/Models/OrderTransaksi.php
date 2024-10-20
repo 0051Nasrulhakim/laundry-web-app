@@ -17,6 +17,7 @@ class OrderTransaksi extends Model
         'nama_pembeli',
         'alamat_pembeli',
         'no_hp',
-        'tanggal_order'
+        'tanggal_order',
+        'status'
     ];
 }

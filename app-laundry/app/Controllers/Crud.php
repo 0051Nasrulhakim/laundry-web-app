@@ -15,8 +15,10 @@ class Crud extends BaseController
         $this->orderHistory = new \App\Models\OrderHistory();
         $this->orderTransaksi = new \App\Models\OrderTransaksi();
         $this->cart = new \App\Models\Cart();
+        $this->statusOrder = new \App\Models\StatusOrder();
         $this->validation = \Config\Services::validation();
         $this->initCart();
+        date_default_timezone_set('Asia/Jakarta');
     }
 
     public function insertPelayanan()
@@ -200,7 +202,17 @@ class Crud extends BaseController
 
         // dd($orderHistory);
         $this->orderHistory->insertBatch($orderHistory);
-
+        
+        // dd($orderTransaksi);
+        $data_statusOrder = [
+            'id_transaksi' => $id,
+            'status_order' => '1',
+            'waktu' => date('Y-m-d H:i:s')
+        ];
+        
+        $this->statusOrder->insert($data_statusOrder);
+        $lastId = $this->statusOrder->insertID();
+        
         $orderTransaksi = [
             'id_transaksi' => $id,
             'id_kasir'     => $orderHistory[0]['id_kasir'],
@@ -209,10 +221,10 @@ class Crud extends BaseController
             'alamat_pembeli' => $this->request->getPost('alamat_pembeli'),
             'no_hp' => $this->request->getPost('no_hp'),
             'tanggal_order' => date('Y-m-d H:i:s'),
+            'status'    => $lastId
         ];
-        // dd($orderTransaksi);
-        $this->orderTransaksi->insert($orderTransaksi);
 
+        $this->orderTransaksi->insert($orderTransaksi);
         $this->cart->where('id_kasir', '0')->delete();
         // dd($transaksi);
         return redirect()->to(base_url('admin/invoice/').$id);
@@ -224,4 +236,49 @@ class Crud extends BaseController
         add keranjang
     
     */
+
+    /* 
+        menu kasir
+        add keranjang
+    
+    */
+    public function ubahStatus()
+    {
+        $idTransaksi = $this->request->getPost('id');
+        $status = $this->request->getPost('status');
+
+        // dd($idTransaksi, $status);
+        $find_status = $this->statusOrder->where('id_transaksi', $idTransaksi)->where('status >=', $status)->delete();
+        // dd($find_status); 
+        $data = [
+            'id_transaksi' => $idTransaksi,
+            'status'       => $status,
+            'waktu'        => date('Y-m-d H:i:s')
+        ];
+
+        $this->statusOrder->insert($data);
+        $lastId = $this->statusOrder->insertID();
+
+        $this->orderTransaksi->update($idTransaksi, ['status' => $lastId]);
+        return redirect()->to(base_url('admin/list_order_masuk'));
+
+
+    }
+
+    public function cekStatusOrder()
+    {
+        $idTransaksi = $this->request->getPost('idTransaksi');
+        // $idTransaksi = '20241020083518';
+
+        $data = $this->statusOrder->where('id_transaksi', $idTransaksi)->findAll();
+        // dd($data);
+        $max = $this->statusOrder->selectMax('status')->where('id_transaksi', $idTransaksi)->first();
+        $data = [
+            'max' => $max,
+            'data' => $data,
+        ];
+        response()->setJSON($data);
+        return response();
+    }
+
 }

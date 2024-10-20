@@ -55,4 +55,10 @@ abstract class BaseController extends Controller
 
         // E.g.: $this->session = \Config\Services::session();
     }
+    
+    public function __construct()
+    {
+        // Set timezone ke WIB
+        date_default_timezone_set('Asia/Jakarta');
+    }
 }

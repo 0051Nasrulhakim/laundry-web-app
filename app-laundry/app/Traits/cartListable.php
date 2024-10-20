@@ -5,6 +5,7 @@ use App\Models\Cart;
 use App\Models\MasterProdukJasa;
 use App\Models\OrderTransaksi;
 use App\Models\OrderHistory;
+use App\Models\StatusOrder;
 
 trait cartListable
 {
@@ -49,6 +50,15 @@ trait cartListable
         // buat relasi ke prduk
         return $data = $this->orderHistori->join('master_produk_jasa', 'master_produk_jasa.id_prod_jasa = order_history.id_prod_jasa')->where('order_history.id_transaksi', $id)->findAll();
 
+    }
+
+    public function getAllOrderTransaksi()
+    {
+        return $data = $this->orderTransaksi
+                ->join('status_order', 'status_order.id_status = order_transaksi.status')
+                ->findAll();
+
+        
     }
 
     public function getOrderTransaksiById($id)
